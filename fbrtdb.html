@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VGWifi - Live Voucher Printer</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <style>
+        /* --- Dashboard Styling (Firebase Console Dark Mode Style) --- */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 1px solid #2d2d2d;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 0;
+            color: #ffffff;
+        }
+        .database-container {
+            background-color: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .db-url {
+            font-family: monospace;
+            color: #a8a8a8;
+            font-size: 14px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2d2d2d;
+            margin-bottom: 15px;
+        }
+        
+        /* --- Collapsible Accordion Styling --- */
+        .tier-wrapper {
+            margin-bottom: 10px;
+            border: 1px solid #2d2d2d;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .tier-header {
+            background-color: #252525;
+            padding: 12px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffca28;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .tier-header:hover {
+            background-color: #2d2d2d;
+        }
+        .tier-header::before {
+            content: "▶";
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 11px;
+            color: #a8a8a8;
+            transition: transform 0.2s;
+        }
+        .tier-wrapper.active .tier-header::before {
+            transform: rotate(90deg);
+            color: #ffca28;
+        }
+        .tier-count {
+            font-size: 12px;
+            background-color: #383838;
+            color: #a8a8a8;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-family: sans-serif;
+        }
+        .tier-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #1a1a1a;
+        }
+        .voucher-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .voucher-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid #252525;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+        }
+        .voucher-item:last-child {
+            border-bottom: none;
+        }
+        .voucher-item:hover {
+            background-color: #222222;
+        }
+        .key {
+            color: #80cbc4;
+        }
+        .val {
+            color: #ff8a65;
+            font-weight: bold;
+        }
+        .print-btn {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .print-btn:hover {
+            background-color: #009688;
+        }
+
+        /* --- Strict Thermal Receipt Print Layout Mapping --- */
+        @media print {
+            body * {
+                display: none !important;
+            }
+            #print-receipt-area, #print-receipt-area * {
+                display: block !important;
+            }
+            #print-receipt-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+                font-family: monospace !important;
+                padding: 0;
+                margin: 0;
+            }
+            .receipt-ticket {
+                width: 58mm;
+                text-align: center;
+                padding: 8px 12px;
+                box-sizing: border-box;
+            }
+            /* --- High Contrast Logo Optimization for Thermal Media --- */
+            .receipt-logo {
+                width: 50%; /* Scales logo cleanly inside narrow paper boundaries */
+                max-width: 160px;
+                height: auto;
+                margin: 0 auto 8px auto;
+                display: block;
+                /* Forced high-contrast processing rules to prevent fuzzy edge dithering */
+                filter: contrast(200%) brightness(100%);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .receipt-label {
+                font-size: 12px;
+                margin-top: 4px;
+                margin-bottom: 0px;
+				letter-spacing: -1px;
+            }
+            .receipt-code {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 12px;
+                letter-spacing: 1px;
+            }
+            .receipt-details {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+            .receipt-timestamp {
+                font-size: 8px;
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="database-container">
+        <div class="header">
+            <h1>Realtime Database Monitor</h1>
+        </div>
+        <div class="db-url">https://vgwifi-a5e90-default-rtdb.asia-southeast1.firebasedatabase.app</div>
+        
+        <div id="tiers-accordion-container">
+            <div style="color: #888; padding: 10px;">Connecting to Firebase...</div>
+        </div>
+    </div>
+
+    <div id="print-receipt-area" style="display: none;"></div>
+
+    <script>
+        // 1. Paste your actual credentials here
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwWuCJSjQLnIK46UVr5C3OdV__ZPL6od4",
+            authDomain: "vgwifi-a5e90.firebaseapp.com",
+            databaseURL: "https://vgwifi-a5e90-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "vgwifi-a5e90",
+            storageBucket: "vgwifi-a5e90.firebasestorage.app",
+            messagingSenderId: "681264447950",
+            appId: "1:681264447950:web:96a320578b257880086b9f"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Exact format mapping text definitions
+        const tierFormats = {
+            "P05V": "30 MINS (P5.00)",
+            "P10V": "1 HOUR (P10.00)",
+            "P15V": "3 HRS (P15.00)",
+            "P20V": "15 HRS (P20.00)",
+            "P25V": "1 DAY (P25.00)",
+            "P35V": "3 DAYS (P35.00)",
+            "P50V": "7 DAYS (P50.00)"
+        };
+
+        const targetTiers = Object.keys(tierFormats);
+
+        // Continuous sync handler
+        database.ref().on('value', (snapshot) => {
+            const mainContainer = document.getElementById('tiers-accordion-container');
+            
+            const openTiers = {};
+            document.querySelectorAll('.tier-wrapper.active').forEach(el => {
+                openTiers[el.dataset.tier] = true;
+            });
+
+            mainContainer.innerHTML = ''; 
+            const rootData = snapshot.val() || {};
+
+            targetTiers.forEach((tierName) => {
+                const tierData = rootData[tierName] || {};
+                const keys = Object.keys(tierData);
+                const count = keys.length;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'tier-wrapper';
+                wrapper.dataset.tier = tierName;
+                if (openTiers[tierName]) wrapper.classList.add('active');
+
+                const header = document.createElement('div');
+                header.className = 'tier-header';
+                header.innerHTML = `<span>${tierName} — <small style="color:#aaa; font-weight:normal;">${tierFormats[tierName]}</small></span> <span class="tier-count">${count} items</span>`;
+                
+                const content = document.createElement('div');
+                content.className = 'tier-content';
+
+                const ul = document.createElement('ul');
+                ul.className = 'voucher-list';
+
+                if (count === 0) {
+                    ul.innerHTML = `<li class="voucher-item" style="color: #666; justify-content: center;">No active vouchers</li>`;
+                } else {
+                    keys.forEach((key) => {
+                        const voucherCode = tierData[key];
+                        const li = document.createElement('li');
+                        li.className = 'voucher-item';
+                        li.innerHTML = `
+                            <div>
+                                <span class="key">${key}:</span> 
+                                <span class="val">"${voucherCode}"</span>
+                            </div>
+                            <button class="print-btn" onclick="event.stopPropagation(); printAndDropVoucher('${tierName}', '${key}', '${voucherCode}')">Print</button>
+                        `;
+                        ul.appendChild(li);
+                    });
+                }
+
+                content.appendChild(ul);
+                wrapper.appendChild(header);
+                wrapper.appendChild(content);
+                mainContainer.appendChild(wrapper);
+
+                if (openTiers[tierName]) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+
+                header.addEventListener('click', () => {
+                    const isActive = wrapper.classList.toggle('active');
+                    if (isActive) {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    } else {
+                        content.style.maxHeight = "0px";
+                    }
+                });
+            });
+        }, (error) => {
+            console.error(error);
+            document.getElementById('tiers-accordion-container').innerHTML = `<div style="color: #ff5252; padding: 10px;">Error: ${error.message}</div>`;
+        });
+
+        // Formatted Print Engine Execution
+        function printAndDropVoucher(tier, key, code) {
+            const printArea = document.getElementById('print-receipt-area');
+            const formatString = tierFormats[tier] || "";
+
+            // Format real-time timestamp layout: MM-DD-YYYY (Day) HH:MM:SS
+            const now = new Date();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const dayName = days[now.getDay()];
+            
+            const timeStr = now.toTimeString().split(' ')[0];
+            const customTimestamp = `${mm}-${dd}-${yyyy} (${dayName}) ${timeStr}`;
+
+            // Render exact print view with your custom image asset
+            printArea.innerHTML = `
+                <div class="receipt-ticket">
+                    <img class="receipt-logo" src="logo.png" alt="VG Wifi Logo">
+                    <div class="receipt-label">Voucher Code:</div>
+                    <div class="receipt-code">${code}</div>
+                    <div class="receipt-details">${formatString}</div>
+                    <div class="receipt-timestamp">${customTimestamp}</div>
+                </div>
+            `;
+
+            // Wait a split second to make sure Chrome loads the logo file into memory before opening the dialog box
+            setTimeout(() => {
+                window.print();
+
+                // Drop structural record element from database automatically
+                database.ref(`${tier}/${key}`).remove()
+                    .then(() => {
+                        console.log(`Dropped structural element reference: ${tier}/${key}`);
+                    })
+                    .catch((error) => {
+                        alert(`Printed successfully, but database dropping failed: ${error.message}`);
+                    });
+            }, 250);
+        }
+    </script>
+</body>
+</html>
