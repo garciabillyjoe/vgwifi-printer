@@ -212,7 +212,7 @@
 
     <div id="print-receipt-area" style="display: none;"></div>
 
-    <script>
+<script>
         // 1. Paste your actual credentials here
         const firebaseConfig = {
             apiKey: "AIzaSyBwWuCJSjQLnIK46UVr5C3OdV__ZPL6od4",
@@ -346,13 +346,32 @@
             setTimeout(() => {
                 window.print();
 
-                // Drop structural record element from database automatically
-                database.ref(`${tier}/${key}`).remove()
+                // 1. Dynamically extract the localized price from the format string (e.g., extracts "P15.00" from "3 HRS (P15.00)")
+                const priceMatch = formatString.match(/\(([^)]+)\)/);
+                const priceLabel = priceMatch ? priceMatch[1] : tier; 
+
+                // 2. Generate the requested custom log message
+                const logMessage = `[${priceLabel}] voucher ("${code}") manually printed and issued`;
+
+                // 3. Get the dynamic path values based on the exact log event time
+                const months = ["01-January", "02-February", "03-March", "04-April", "05-May", "06-June", "07-July", "08-August", "09-September", "10-October", "11-November", "12-December"];
+                const monthFolder = months[now.getMonth()];
+                const dateFolder = `${mm}-${dd}-${yyyy}`;
+
+                const logPath = `/logs/${yyyy}/${monthFolder}/${dateFolder}`;
+
+                // 4. Send the log entry to the RTDB, then remove the printed voucher
+                database.ref(logPath).push(logMessage)
+                    .then(() => {
+                        console.log(`Log successfully generated at: ${logPath}`);
+                        // Drop structural record element from database automatically
+                        return database.ref(`${tier}/${key}`).remove();
+                    })
                     .then(() => {
                         console.log(`Dropped structural element reference: ${tier}/${key}`);
                     })
                     .catch((error) => {
-                        alert(`Printed successfully, but database dropping failed: ${error.message}`);
+                        alert(`Process encountered an issue: ${error.message}`);
                     });
             }, 250);
         }
