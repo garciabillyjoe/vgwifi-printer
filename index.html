@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VGWifi - Live Voucher Printer</title>
+    <title>VGWifi Voucher Printer</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -58,7 +58,7 @@
             padding: 12px 15px;
             font-size: 15px;
             font-weight: bold;
-            color: #ffca28;
+            color: #c9ff28;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -79,7 +79,7 @@
         }
         .tier-wrapper.active .tier-header::before {
             transform: rotate(90deg);
-            color: #ffca28;
+            color: #c9ff28;
         }
         .tier-count {
             font-size: 12px;
@@ -201,7 +201,7 @@
 
     <div class="database-container">
         <div class="header">
-            <h1>Realtime Database Monitor</h1>
+            <h1>VGWifi Voucher Database Printer</h1>
         </div>
         <div class="db-url">https://vgwifi-a5e90-default-rtdb.asia-southeast1.firebasedatabase.app</div>
         
@@ -265,7 +265,7 @@
 
                 const header = document.createElement('div');
                 header.className = 'tier-header';
-                header.innerHTML = `<span>${tierName} — <small style="color:#aaa; font-weight:normal;">${tierFormats[tierName]}</small></span> <span class="tier-count">${count} items</span>`;
+                header.innerHTML = `<span>${tierFormats[tierName]}</span> <span class="tier-count">${count} items</span>`;
                 
                 const content = document.createElement('div');
                 content.className = 'tier-content';
