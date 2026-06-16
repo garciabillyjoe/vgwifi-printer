@@ -163,17 +163,17 @@
     }
     .receipt-ticket {
         width: 58mm;
-        /* Removed max-height restriction so nothing gets clipped */
         text-align: center !important; 
         display: flex;
         flex-direction: column;
         align-items: center; 
         justify-content: flex-start;
-        padding: 6px 0px 12px 0px;  /* Added bottom padding to safely preserve the last line */
+        padding: 6px 0px 12px 0px;  
         box-sizing: border-box;
         
-        /* Keeps your horizontal alignment fix active */
-        margin-left: -4mm !important; 
+        /* --- ADJUSTED SHIFT FIX --- */
+        /* Increased from -4mm to -7mm to center the text and logo precisely */
+        margin-left: -7mm !important; 
     }
     .receipt-logo {
         width: 45%; /* Shrunk slightly to give text items vertical room to breathe */
