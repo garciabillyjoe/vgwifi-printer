@@ -138,10 +138,11 @@
         }
 
        /* --- Strict Thermal Receipt Print Layout Mapping --- */
+/* --- Strict Thermal Receipt Print Layout Mapping --- */
 @media print {
     @page {
         size: 58mm auto;
-        margin: 0 !important; /* Forces Chrome to remove all default white space boundaries */
+        margin: 0 !important; /* Force zero margins to utilize full printable width */
     }
 
     body * {
@@ -161,42 +162,55 @@
     }
     .receipt-ticket {
         width: 58mm;
-        max-height: 50mm; /* Hard cap on the maximum paper height allocated per ticket */
-        text-align: center;
-        padding: 4px 6px;  /* Compact vertical padding */
+        max-height: 55mm; 
+        text-align: center !important; /* Forces text content to absolute center */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers block elements like the logo image */
+        justify-content: center;
+        padding: 6px 2px;  /* Minimal side padding gives text more room to expand */
         box-sizing: border-box;
         overflow: hidden;
     }
     .receipt-logo {
-        width: 50%;
-        max-width: 140px;
+        width: 65%; /* Increased scaling from 50% to 65% for a much bigger logo */
+        max-width: 150px;
         height: auto;
-        margin: 0 auto 4px auto;
+        margin: 0 auto 6px auto;
         display: block;
         filter: contrast(200%) brightness(100%);
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
     .receipt-label {
-        font-size: 11px;
-        margin-top: 2px;
-        margin-bottom: 0px;
-        letter-spacing: -1px;
+        font-size: 14px; /* Increased from 11px */
+        font-weight: bold;
+        margin-top: 4px;
+        margin-bottom: 2px;
+        text-align: center;
+        width: 100%;
     }
     .receipt-code {
-        font-size: 22px;
+        font-size: 32px; /* Increased from 22px for heavy readability */
         font-weight: bold;
         margin-bottom: 6px;
         letter-spacing: 1px;
+        text-align: center;
+        width: 100%;
     }
     .receipt-details {
-        font-size: 13px;
-        margin-bottom: 6px;
+        font-size: 16px; /* Increased from 13px */
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-align: center;
+        width: 100%;
     }
     .receipt-timestamp {
-        font-size: 8px;
+        font-size: 9px; /* Slightly adjusted for clarity */
         color: #000;
-        padding-bottom: 0px; /* Zero out trailing space below timestamp */
+        text-align: center;
+        width: 100%;
+        padding-bottom: 0px;
         margin-bottom: 0px;
     }
 }
