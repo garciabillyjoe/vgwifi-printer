@@ -137,65 +137,69 @@
             background-color: #009688;
         }
 
-        /* --- Strict Thermal Receipt Print Layout Mapping --- */
-        @media print {
-            body * {
-                display: none !important;
-            }
-            #print-receipt-area, #print-receipt-area * {
-                display: block !important;
-            }
-            #print-receipt-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background: white !important;
-                color: black !important;
-                font-family: monospace !important;
-                padding: 0;
-                margin: 0;
-            }
-            .receipt-ticket {
-                width: 58mm;
-				max-height: 65mm;
-                text-align: center;
-                padding: 8px 12px;
-                box-sizing: border-box;
-            }
-            /* --- High Contrast Logo Optimization for Thermal Media --- */
-            .receipt-logo {
-                width: 50%; /* Scales logo cleanly inside narrow paper boundaries */
-                max-width: 160px;
-                height: auto;
-                margin: 0 auto 8px auto;
-                display: block;
-                /* Forced high-contrast processing rules to prevent fuzzy edge dithering */
-                filter: contrast(200%) brightness(100%);
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .receipt-label {
-                font-size: 12px;
-                margin-top: 4px;
-                margin-bottom: 0px;
-				letter-spacing: -1px;
-            }
-            .receipt-code {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 12px;
-                letter-spacing: 1px;
-            }
-            .receipt-details {
-                font-size: 14px;
-                margin-bottom: 12px;
-            }
-            .receipt-timestamp {
-                font-size: 8px;
-                color: #000;
-            }
-        }
+       /* --- Strict Thermal Receipt Print Layout Mapping --- */
+@media print {
+    @page {
+        size: 58mm auto;
+        margin: 0 !important; /* Forces Chrome to remove all default white space boundaries */
+    }
+
+    body * {
+        display: none !important;
+    }
+    #print-receipt-area, #print-receipt-area * {
+        display: block !important;
+    }
+    #print-receipt-area {
+        position: relative; 
+        width: 58mm;
+        background: white !important;
+        color: black !important;
+        font-family: monospace !important;
+        padding: 0;
+        margin: 0;
+    }
+    .receipt-ticket {
+        width: 58mm;
+        max-height: 50mm; /* Hard cap on the maximum paper height allocated per ticket */
+        text-align: center;
+        padding: 4px 6px;  /* Compact vertical padding */
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .receipt-logo {
+        width: 50%;
+        max-width: 140px;
+        height: auto;
+        margin: 0 auto 4px auto;
+        display: block;
+        filter: contrast(200%) brightness(100%);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .receipt-label {
+        font-size: 11px;
+        margin-top: 2px;
+        margin-bottom: 0px;
+        letter-spacing: -1px;
+    }
+    .receipt-code {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 6px;
+        letter-spacing: 1px;
+    }
+    .receipt-details {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    .receipt-timestamp {
+        font-size: 8px;
+        color: #000;
+        padding-bottom: 0px; /* Zero out trailing space below timestamp */
+        margin-bottom: 0px;
+    }
+}
     </style>
 </head>
 <body>
