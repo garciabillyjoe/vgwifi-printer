@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VGWifi - Live Voucher Printer</title>
-    <link rel="icon" type="image/png" sizes="48x40" href="favicon.png">
-    
-    <!-- Include Firebase Compat Modules (Only App & Database needed now) -->
+    <title>VGWifi Voucher Printer</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -18,91 +16,6 @@
             font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 20px;
-        }
-        
-        /* --- Login Card Container --- */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
-        }
-        .login-card {
-            background-color: #1e1e1e;
-            border: 1px solid #2d2d2d;
-            border-radius: 8px;
-            padding: 30px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            text-align: center;
-        }
-        .login-card h2 {
-            color: #ffffff;
-            font-weight: 400;
-            margin-bottom: 25px;
-            font-size: 22px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            color: #a8a8a8;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            background-color: #121212;
-            border: 1px solid #3d3d3d;
-            border-radius: 4px;
-            color: #ffffff;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #ffca28;
-        }
-        .login-btn {
-            width: 100%;
-            background-color: #ffca28;
-            color: #121212;
-            border: none;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 10px;
-        }
-        .login-btn:hover {
-            background-color: #ffe082;
-        }
-        .error-msg {
-            color: #ff5252;
-            font-size: 13px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        /* --- Main App Container --- */
-        .database-container {
-            background-color: #1e1e1e;
-            border: 1px solid #2d2d2d;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            display: none; /* Controlled via Local Auth State */
         }
         .header {
             border-bottom: 1px solid #2d2d2d;
@@ -118,20 +31,15 @@
             margin: 0;
             color: #ffffff;
         }
-        .logout-btn {
-            background-color: transparent;
-            color: #a8a8a8;
-            border: 1px solid #3d3d3d;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover {
-            color: #ffffff;
-            border-color: #ff5252;
-            background-color: rgba(255, 82, 82, 0.1);
+        .database-container {
+            display: none; /* Hidden until authenticated */
+            background-color: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .db-url {
             font-family: monospace;
@@ -140,6 +48,96 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #2d2d2d;
             margin-bottom: 15px;
+        }
+        
+        /* --- Login Screen Styling --- */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .login-card {
+            background-color: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: 400;
+            font-size: 22px;
+        }
+        .login-form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .login-form-group label {
+            display: block;
+            font-size: 13px;
+            color: #a8a8a8;
+            margin-bottom: 6px;
+        }
+        .login-input {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #121212;
+            border: 1px solid #3d3d3d;
+            border-radius: 4px;
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #c9ff28;
+        }
+        .login-btn {
+            width: 100%;
+            background-color: #c9ff28;
+            color: #121212;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            background-color: #b3e620;
+        }
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+        .login-error {
+            color: #ff5252;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+        }
+        .logout-btn {
+            background-color: transparent;
+            color: #a8a8a8;
+            border: 1px solid #3d3d3d;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .logout-btn:hover {
+            background-color: #2d2d2d;
+            color: #ff5252;
+            border-color: #ff5252;
         }
         
         /* --- Collapsible Accordion Styling --- */
@@ -154,7 +152,7 @@
             padding: 12px 15px;
             font-size: 15px;
             font-weight: bold;
-            color: #ffca28;
+            color: #c9ff28;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -175,7 +173,7 @@
         }
         .tier-wrapper.active .tier-header::before {
             transform: rotate(90deg);
-            color: #ffca28;
+            color: #c9ff28;
         }
         .tier-count {
             font-size: 12px;
@@ -235,6 +233,11 @@
 
         /* --- Strict Thermal Receipt Print Layout Mapping --- */
         @media print {
+            @page {
+                size: 58mm auto;
+                margin: 0 !important; 
+            }
+
             body * {
                 display: none !important;
             }
@@ -259,7 +262,7 @@
                 justify-content: flex-start;
                 padding: 6px 0px 12px 0px;  
                 box-sizing: border-box;
-                margin-left: -10mm !important; /* Your dialed-in custom offset hardware fix */
+                margin-left: -10mm !important; 
             }
             .receipt-logo {
                 width: 45%; 
@@ -300,35 +303,33 @@
                 text-align: center;
                 width: 100%;
                 margin-top: 2px;
-                display: block !important;
+                display: block !important; 
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- LOCAL LOGIN BOX PANEL -->
-    <div id="login-panel" class="login-container">
+    <div id="login-container" class="login-wrapper">
         <div class="login-card">
-            <h2>VGWifi Portal Sign In</h2>
-            <div class="input-group">
+            <h2>VGWifi Admin Portal</h2>
+            <div class="login-form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" placeholder="admin">
+                <input type="text" id="username" class="login-input" placeholder="Enter username" autocomplete="off">
             </div>
-            <div class="input-group">
+            <div class="login-form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key === 'Enter') handleLogin()">
+                <input type="password" id="password" class="login-input" placeholder="Enter password">
             </div>
-            <button class="login-btn" onclick="handleLogin()">Login to Monitor</button>
-            <div id="error-message" class="error-msg">Invalid Username or Password.</div>
+            <button class="login-btn" onclick="handleLogin()">Sign In</button>
+            <div id="login-error-msg" class="login-error">Invalid credentials. Try again.</div>
         </div>
     </div>
 
-    <!-- MAIN CONTROL APP PANEL (Hidden initially) -->
-    <div id="app-panel" class="database-container">
+    <div id="dashboard-container" class="database-container">
         <div class="header">
-            <h1>Realtime Database Monitor</h1>
-            <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+            <h1>VGWifi Voucher Database Printer</h1>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
         <div class="db-url">https://vgwifi-a5e90-default-rtdb.asia-southeast1.firebasedatabase.app</div>
         
@@ -340,11 +341,11 @@
     <div id="print-receipt-area" style="display: none;"></div>
 
     <script>
-        // --- 🔐 CHANGE YOUR LOG IN CREDENTIALS HERE ---
-        const ADMIN_USERNAME = "admin";
-        const ADMIN_PASSWORD = "135908billy"; 
+        // --- ADMIN LOGIN CREDENTIAL CONFIGURATION ---
+        const AUTH_USER = "bpg";
+        const AUTH_PASS = "135908billy"; // Change these to your preferred credentials
 
-        // Firebase initialization configuration block
+        // 1. Paste your actual credentials here
         const firebaseConfig = {
             apiKey: "AIzaSyBwWuCJSjQLnIK46UVr5C3OdV__ZPL6od4",
             authDomain: "vgwifi-a5e90.firebaseapp.com",
@@ -355,9 +356,11 @@
             appId: "1:681264447950:web:96a320578b257880086b9f"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // Exact format mapping text definitions
         const tierFormats = {
             "P05V": "30 MINS (P5.00)",
             "P10V": "1 HOUR (P10.00)",
@@ -367,54 +370,51 @@
             "P35V": "3 DAYS (P35.00)",
             "P50V": "7 DAYS (P50.00)"
         };
+
         const targetTiers = Object.keys(tierFormats);
-        let dbRef = null; 
 
-        // Check for active session when page loads
-        window.onload = function() {
-            if (sessionStorage.getItem("vgwifi_logged_in") === "true") {
-                showDashboard();
-            } else {
-                showLogin();
+        // --- AUTHENTICATION ENGINES ---
+        function checkSession() {
+            if (sessionStorage.getItem("vgwifi_authenticated") === "true") {
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("dashboard-container").style.display = "block";
+                initializeDataSync();
             }
-        };
+        }
 
-        // Local Authentication check
         function handleLogin() {
-            const userIn = document.getElementById('username').value;
-            const passIn = document.getElementById('password').value;
-            const errorDiv = document.getElementById('error-message');
-            
-            if (userIn === ADMIN_USERNAME && passIn === ADMIN_PASSWORD) {
-                errorDiv.style.display = 'none';
-                sessionStorage.setItem("vgwifi_logged_in", "true");
-                showDashboard();
+            const userIn = document.getElementById("username").value;
+            const passIn = document.getElementById("password").value;
+            const errorMsg = document.getElementById("login-error-msg");
+
+            if (userIn === AUTH_USER && passIn === AUTH_PASS) {
+                errorMsg.style.display = "none";
+                sessionStorage.setItem("vgwifi_authenticated", "true");
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("dashboard-container").style.display = "block";
+                initializeDataSync();
             } else {
-                errorDiv.style.display = 'block';
+                errorMsg.style.display = "block";
+                document.getElementById("password").value = "";
             }
         }
 
         function handleLogout() {
-            sessionStorage.removeItem("vgwifi_logged_in");
-            showLogin();
+            sessionStorage.removeItem("vgwifi_authenticated");
+            window.location.reload();
         }
 
-        function showDashboard() {
-            document.getElementById('login-panel').style.display = 'none';
-            document.getElementById('app-panel').style.display = 'block';
-            startDatabaseSync();
-        }
+        // Add Enter Key execution listeners to login inputs
+        document.getElementById("password").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") handleLogin();
+        });
+        document.getElementById("username").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") handleLogin();
+        });
 
-        function showLogin() {
-            if (dbRef) database.ref().off('value', dbRef);
-            document.getElementById('tiers-accordion-container').innerHTML = '';
-            document.getElementById('app-panel').style.display = 'none';
-            document.getElementById('login-panel').style.display = 'flex';
-        }
-
-        /* --- Continuous Database Synchronizer Stream Engine --- */
-        function startDatabaseSync() {
-            dbRef = database.ref().on('value', (snapshot) => {
+        // --- FIREBASE DATA SYNC ENGINE ---
+        function initializeDataSync() {
+            database.ref().on('value', (snapshot) => {
                 const mainContainer = document.getElementById('tiers-accordion-container');
                 
                 const openTiers = {};
@@ -437,7 +437,7 @@
 
                     const header = document.createElement('div');
                     header.className = 'tier-header';
-                    header.innerHTML = `<span>${tierName} — <small style="color:#aaa; font-weight:normal;">${tierFormats[tierName]}</small></span> <span class="tier-count">${count} items</span>`;
+                    header.innerHTML = `<span>${tierFormats[tierName]}</span> <span class="tier-count">${count} items</span>`;
                     
                     const content = document.createElement('div');
                     content.className = 'tier-content';
@@ -487,11 +487,12 @@
             });
         }
 
-        /* --- Formatted Print Engine Execution --- */
+        // Formatted Print Engine Execution
         function printAndDropVoucher(tier, key, code) {
             const printArea = document.getElementById('print-receipt-area');
             const formatString = tierFormats[tier] || "";
 
+            // Format real-time timestamp layout: MM-DD-YYYY (Day) HH:MM:SS
             const now = new Date();
             const mm = String(now.getMonth() + 1).padStart(2, '0');
             const dd = String(now.getDate()).padStart(2, '0');
@@ -503,6 +504,7 @@
             const timeStr = now.toTimeString().split(' ')[0];
             const customTimestamp = `${mm}-${dd}-${yyyy} (${dayName}) ${timeStr}`;
 
+            // Render exact print view with your custom image asset
             printArea.innerHTML = `
                 <div class="receipt-ticket">
                     <img class="receipt-logo" src="logo.png" alt="VG Wifi Logo">
@@ -513,28 +515,42 @@
                 </div>
             `;
 
+            // Wait a split second to make sure Chrome loads the logo file into memory before opening the dialog box
             setTimeout(() => {
                 window.print();
 
+                // 1. Dynamically extract the localized price from the format string
                 const priceMatch = formatString.match(/\(([^)]+)\)/);
-                const priceLabel = priceMatch ? priceMatch[1] : tier; 
+                const priceLabel = priceMatch ? priceMatch[1] : tier;
                 const logTimestamp = `${mm}-${dd}-${yyyy}-${timeStr}`;
-                const logMessage = `${logTimestamp}: [${priceLabel}] voucher ("${code}") manually printed and issued;`;
 
+                // 2. Generate the requested custom log message
+                const logMessage = `${logTimestamp}: ${formatString} voucher: "${code}" manually printed and issued`;
+
+                // 3. Get the dynamic path values based on the exact log event time
                 const months = ["01-January", "02-February", "03-March", "04-April", "05-May", "06-June", "07-July", "08-August", "09-September", "10-October", "11-November", "12-December"];
                 const monthFolder = months[now.getMonth()];
                 const dateFolder = `${mm}-${dd}-${yyyy}`;
+
                 const logPath = `/logs/${yyyy}/${monthFolder}/${dateFolder}`;
 
+                // 4. Send the log entry to the RTDB, then remove the printed voucher
                 database.ref(logPath).push(logMessage)
                     .then(() => {
+                        console.log(`Log successfully generated at: ${logPath}`);
                         return database.ref(`${tier}/${key}`).remove();
+                    })
+                    .then(() => {
+                        console.log(`Dropped structural element reference: ${tier}/${key}`);
                     })
                     .catch((error) => {
                         alert(`Process encountered an issue: ${error.message}`);
                     });
             }, 250);
         }
+
+        // Run authentication verification routine on window mount
+        window.onload = checkSession;
     </script>
 </body>
 </html>
