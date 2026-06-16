@@ -163,14 +163,18 @@
     .receipt-ticket {
         width: 58mm;
         max-height: 55mm; 
-        text-align: center !important; /* Forces text content to absolute center */
+        text-align: center !important;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centers block elements like the logo image */
+        align-items: center;
         justify-content: center;
-        padding: 6px 2px;  /* Minimal side padding gives text more room to expand */
+        padding: 6px 0px;  /* Dropped side padding completely to save horizontal space */
         box-sizing: border-box;
         overflow: hidden;
+
+        /* --- THE SHIFT FIX --- */
+        /* This pulls the container to the left to cancel out the driver's layout gap */
+        margin-left: -4mm !important; 
     }
     .receipt-logo {
         width: 65%; /* Increased scaling from 50% to 65% for a much bigger logo */
